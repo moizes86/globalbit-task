@@ -5,6 +5,7 @@ import { Link, useHistory } from "react-router-dom";
 import useFetch from "../useFetch";
 import InputField from "./InputField";
 import CheckCircleSuccess from "./CheckCircleSuccess";
+import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 
 export default function Register() {
   const initialValues = {
@@ -30,7 +31,7 @@ export default function Register() {
       }, 1000);
       if (countdown === 0) {
         clearInterval(myInterval);
-        history.push('/login');
+        history.push("/login");
       }
     }
 
@@ -103,17 +104,20 @@ export default function Register() {
           handleChange={handleChange}
           handleBlur={handleBlur}
         />
-        <InputField
-          label="Address:"
-          type="text"
-          name="address"
-          id="address"
-          placeholder="Enter address"
-          value={values.address}
-          error={errors.address}
-          handleChange={handleChange}
-          handleBlur={handleBlur}
-        />
+        
+        <div className="form-group">
+          <label htmlFor="address">Address</label>
+          <GooglePlacesAutocomplete
+            apiKey={process.env.REACT_APP_GOOGLE_PLACES_KEY}
+            selectProps={{
+              values,
+              onChange: (e) => {
+                setValues({ ...values, address: e.label });
+              },
+            }}
+          />
+        </div>
+        
         <InputField
           label="Password:"
           type="password"
