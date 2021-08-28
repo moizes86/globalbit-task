@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { validationsAPI, validateFields } from "../DAL/validations";
 import { register } from "../DAL/httpServices";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import useFetch from "../useFetch";
 import InputField from "./InputField";
 import CheckCircleSuccess from "./CheckCircleSuccess";
@@ -18,7 +18,24 @@ export default function Register() {
 
   const [values, setValues] = useState(initialValues);
   const [errors, setErrors] = useState(initialValues);
+  const [countdown, setCountdown] = useState(2);
   const { sendRequest, loading, data, error, Spinner } = useFetch();
+
+  const history = useHistory();
+
+  useEffect(() => {
+    if (data) {
+      const myInterval = setInterval(() => {
+        setCountdown(countdown - 1);
+      }, 1000);
+      if (countdown === 0) {
+        clearInterval(myInterval);
+        history.push('/login');
+      }
+    }
+
+    return () => {};
+  }, [data, countdown, history, values.email]);
 
   const handleBlur = ({ target: { name, value } }) => {
     try {
@@ -51,7 +68,7 @@ export default function Register() {
   };
 
   return (
-    <div>
+    <div className="container col-sm-7 col-md-6 col-lg-5 col-xl-4 my-5">
       <form onSubmit={handleSubmit}>
         <InputField
           type="email"
@@ -125,7 +142,7 @@ export default function Register() {
         ) : data ? (
           <>
             <CheckCircleSuccess message={data} />
-            <Link to="/login">Login</Link>
+            <p>Redirecting in {countdown}</p>
           </>
         ) : (
           <>

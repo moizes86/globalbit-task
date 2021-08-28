@@ -16,9 +16,22 @@ export default function Login() {
   const [errors, setErrors] = useState(initialValues);
   const [countdown, setCountdown] = useState(2);
 
+  const history = useHistory();
+
   const { sendRequest, loading, data, error, Spinner } = useFetch();
 
-  const history = useHistory();
+  useEffect(() => {
+    if (data) {
+      const myInterval = setInterval(() => {
+        setCountdown(countdown - 1);
+      }, 1000);
+      if (countdown === 0) {
+        clearInterval(myInterval);
+        history.push(`/verify/${values.email}`);
+      }
+    }
+    return () => {};
+  }, [data, countdown, history, values.email]);
 
   const handleBlur = ({ target: { name, value } }) => {
     try {
@@ -51,18 +64,8 @@ export default function Login() {
     sendRequest(login, values);
   };
 
-  useEffect(() => {
-    if (data) {
-      const myInterval = setInterval(() => {
-        setCountdown(countdown-1);
-      }, 1000);
-      if (countdown === 0) {clearInterval(myInterval); history.push('/verify')};
-      return ()=> {};
-    }
-  }, [data,countdown,history]);
-
   return (
-    <div className="">
+    <div className="container col-sm-7 col-md-6 col-lg-5 col-xl-4 my-5">
       <form onSubmit={handleSubmit}>
         <InputField
           type="email"

@@ -4,21 +4,23 @@ import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 
+// Components
 import Login from "./Components/Login";
 import Register from "./Components/Register";
 import Verify from "./Components/Verify";
+import DisplayUsers from "./Components/DisplayUsers";
+
 
 ReactDOM.render(
   <React.StrictMode>
-    <div className="container col-sm-7 col-md-5 col-lg-4 col-xl-3 my-5">
       <BrowserRouter>
         <Switch>
           <Route exact path={["/", "/login"]} component={Login} />
           <Route exact path="/register" component={Register} />
-          <Route exact path="/verify" component={Verify} />
+          <Route path="/verify/:email" component={Verify} />
+          <Route exact path="/display-users" component={DisplayUsers} />
         </Switch>
       </BrowserRouter>
-    </div>
   </React.StrictMode>,
   document.getElementById("root")
 );
