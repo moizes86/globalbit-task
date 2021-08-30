@@ -34,7 +34,6 @@ app.use(
 
 app.post("/register", async (req, res) => {
   const result = await DB.register(req.body);
-
   res.status(200).send(result);
 });
 

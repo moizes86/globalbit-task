@@ -13,14 +13,19 @@ const promisePool = pool.promise();
 
 const DB = {
   async register({ email, firstname, lastname, address, password }) {
-    try {
-      bycrypt.hash(password, saltRounds, async (err, hash) => {
-        await promisePool.execute(
-          "Insert Into users (email, firstname, lastname, address, password) Values (?,?,?,?,?);",
-          [email, firstname, lastname, address, hash]
-        );
-      });
 
+    let hash = await new Promise((resolve, reject) => {
+      bycrypt.hash(password, saltRounds, async (err, hash) => {
+        if (err) reject(err);
+        resolve(hash);
+      });
+    });
+
+    try {
+      await promisePool.execute(
+        "Insert Into users (email, firstname, lastname, address, password) Values (?,?,?,?,?);",
+        [email, firstname, lastname, address, hash]
+      );
       return { success: true, payload: "Registration Successful" };
     } catch (err) {
       if (err.errno === 1062) return { success: false, payload: "Email already exists. Try another one." };
