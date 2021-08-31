@@ -58,7 +58,7 @@ const DB = {
         return { success: true, payload: "Congratulations! User activated" };
       }
 
-      return { success: false, payload: "Verification failed - code doesn'nt match" };
+      return { success: false, payload: "Verification failed - code does not match" };
     } catch (err) {
       return { success: false, payload: "Verification error. Try again later." };
     }
