@@ -1,76 +1,24 @@
-import React, { useState, useEffect } from "react";
-import { validationsAPI, validateFields } from "../DAL/validations";
+import React from "react";
 import { register } from "../DAL/httpServices";
-import { Link, useHistory } from "react-router-dom";
-import useFetch from "../useFetch";
-import InputField from "./InputField";
-import CheckCircleSuccess from "./CheckCircleSuccess";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
+import useForm from "../useForm";
+import FormBottom from "./FormBottom";
+import InputField from "./InputField";
 
 export default function Register() {
-  const initialValues = {
-    email: "",
-    firstname: "",
-    lastname: "",
-    address: "",
-    password: "",
-    confirmPassword: "",
-  };
+  const { values, errors, countdown, handleBlur, handleChange, handleSubmit, loading, data, error } =
+    useForm();
 
-  const [values, setValues] = useState(initialValues);
-  const [errors, setErrors] = useState(initialValues);
-  const [countdown, setCountdown] = useState(2);
-  const { sendRequest, loading, data, error, Spinner } = useFetch();
+  const redirectTo = "/login";
 
-  const history = useHistory();
-
-  useEffect(() => {
-    if (data) {
-      const myInterval = setInterval(() => {
-        setCountdown(countdown - 1);
-      }, 1000);
-      if (countdown === 0) {
-        clearInterval(myInterval);
-        history.push("/login");
-      }
-    }
-
-    return () => {};
-  }, [data, countdown, history, values.email]);
-
-  const handleBlur = ({ target: { name, value } }) => {
-    try {
-      name === "confirmPassword" ? validationsAPI[name](value, values.password) : validationsAPI[name](value);
-      setErrors({ ...errors, [name]: "" });
-    } catch (err) {
-      setErrors({ ...errors, [name]: err.message });
-    }
-  };
-
-  const handleChange = ({ target: { name, value } }) => {
-    setValues({ ...values, [name]: value });
-  };
-
-  const validateForm = () => {
-    const isValidForm = validateFields(values);
-    if (isValidForm !== true) {
-      setErrors({ ...errors, [isValidForm.key]: isValidForm.message });
-      return false;
-    }
-
-    setErrors(initialValues);
-    return true;
-  };
-
-  const handleSubmit = async (e) => {
+  const onSubmitRegister = async (e) => {
     e.preventDefault();
-    if (!validateForm()) return;
-    await sendRequest(register, values);
+    handleSubmit(register, redirectTo);
   };
 
   return (
     <div className="container col-sm-7 col-md-6 col-lg-5 col-xl-4 my-5">
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={onSubmitRegister}>
         <InputField
           type="email"
           label="Email:"
@@ -104,7 +52,7 @@ export default function Register() {
           handleChange={handleChange}
           handleBlur={handleBlur}
         />
-        
+
         <div className="form-group">
           <label htmlFor="address">Address</label>
           <GooglePlacesAutocomplete
@@ -112,12 +60,12 @@ export default function Register() {
             selectProps={{
               values,
               onChange: (e) => {
-                setValues({ ...values, address: e.label });
+                handleChange({target:{name:'address', value:e.label} });
               },
             }}
           />
         </div>
-        
+
         <InputField
           label="Password:"
           type="password"
@@ -141,27 +89,14 @@ export default function Register() {
           handleBlur={handleBlur}
         />
 
-        {loading ? (
-          <Spinner />
-        ) : data ? (
-          <>
-            <CheckCircleSuccess message={data} />
-            <p>Redirecting in {countdown}</p>
-          </>
-        ) : (
-          <>
-            <div className="py-3">
-              <button type="submit" className="btn btn-primary mr-4">
-                Register
-              </button>
-              <Link to="/login">Login</Link>
-            </div>
-
-            <div className="text-danger h5">
-              <p>{error}</p>
-            </div>
-          </>
-        )}
+        <FormBottom
+          loading={loading}
+          data={data}
+          countdown={countdown}
+          error={error}
+          btnText="Register"
+          link="login"
+        />
       </form>
     </div>
   );

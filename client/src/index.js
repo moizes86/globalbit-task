@@ -17,7 +17,7 @@ ReactDOM.render(
         <Switch>
           <Route exact path={["/", "/login"]} component={Login} />
           <Route exact path="/register" component={Register} />
-          <Route path="/verify/:email" component={Verify} />
+          <Route path="/verify" component={Verify} />
           <Route exact path="/display-users" component={DisplayUsers} />
         </Switch>
       </BrowserRouter>

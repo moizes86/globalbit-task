@@ -47,14 +47,16 @@ export const validationsAPI = {
 
 export const validateFields = (values) => {
   for (const key in values) {
-    try {
-      if (key === "confirmPassword") {
-        validationsAPI[key](values[key], values["password"]);
-      } else {
-        validationsAPI[key](values[key]);
+    if (validationsAPI[key]) {
+      try {
+        if (key === "confirmPassword") {
+          validationsAPI[key](values[key], values["password"]);
+        } else {
+          validationsAPI[key](values[key]);
+        }
+      } catch (err) {
+        return { key, message: err.message };
       }
-    } catch (err) {
-      return { key, message: err.message };
     }
   }
 
