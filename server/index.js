@@ -85,7 +85,6 @@ const verifyWithJwtBeforeUsersDisplay = (req, res, next) => {
 };
 
 app.get("/display-users", verifyWithJwtBeforeUsersDisplay, async (req, res) => {
-  debugger
   const result = await DB.getUsersToDisplay();
   return res.status(200).send(result);
 });
