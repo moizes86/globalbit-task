@@ -11,11 +11,9 @@ const useFetch = () => {
     setError(null);
     try {
       const result = await cb(...params);
-      if (!result.data.success) throw Error(result.data.payload);
-
-      setData(result.data.payload);
+      setData(result.data);
     } catch (e) {
-      setError(e.message || "Something went wrong");
+      setError(e.response.data.message || "Something went wrong");
     }
     setLoading(false);
   }, []);

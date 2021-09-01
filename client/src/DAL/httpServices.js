@@ -12,10 +12,12 @@ export const login = async (data) => {
   return await axios.post(`${url}/login`, data);
 };
 
+//
 export const verify = async (data) => {
   return await axios.post(`${url}/verify`, data);
 };
 
 export const getUsersToDisplay = async () => {
-  return await axios.get(`${url}/usersToDisplay`);
+  const token = sessionStorage.getItem("token");
+  return await axios.get(`${url}/display-users`, { headers: { token } });
 };

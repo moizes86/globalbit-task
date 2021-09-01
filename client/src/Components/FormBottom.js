@@ -10,7 +10,7 @@ export default function FormBottom({ loading, data, countdown, error, btnText, l
         <Spinner />
       ) : data ? (
         <>
-          <CheckCircleSuccess message={data} />
+          <CheckCircleSuccess message={data.message} />
           <p>Redirecting in {countdown}</p>
         </>
       ) : (

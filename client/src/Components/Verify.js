@@ -1,22 +1,25 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { verify } from "../DAL/httpServices";
 import useForm from "../useForm";
 import InputField from "./InputField";
 import FormBottom from "./FormBottom";
 
 export default function Verify() {
+  const { values, countdown, handleSubmit, handleChange, loading, data, error } = useForm();
 
   useEffect(() => {
     values.email = sessionStorage.getItem("email");
   }, []);
 
-  const { values,countdown, handleSubmit, handleChange, loading, data, error } = useForm();
+  useEffect(()=>{
+    if (data && data.accessToken) sessionStorage.setItem("token", 'Bearer ' + data.accessToken);
+  },[data])
 
   const redirectTo = "display-users";
 
-  const onSubmitVerify = (e) => {
+  const onSubmitVerify = async (e) => {
     e.preventDefault();
-    handleSubmit(verify, redirectTo);
+    await handleSubmit(verify, redirectTo);
   };
 
   return (

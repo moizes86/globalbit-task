@@ -28,7 +28,7 @@ export default function DisplayUsers() {
               </tr>
             </thead>
             <tbody>
-              {data.map((user, i) => (
+              {data.payload.map((user, i) => (
                 <tr key={user.email}>
                   <th scope="row">{i + 1}</th>
                   <td>{user.firstname}</td>
